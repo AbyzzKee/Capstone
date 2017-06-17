@@ -26,9 +26,11 @@ Technical Details
 ========================================================
  - Due to hardware limit, **HC Corpora** is cropped into multiple part, to process separately in a loop.
 
- - **Ngrams** are extracted using R-Library: tm (Text Mining) and NLP (Natural Language Processing). Extracted Ngrams are stored for ShinyApp word prediction direct access.
-
- - Not every Ngram combination are covered, **Back-Off Algorithm** is adopted to ensure the every input are answered.
+ - **Ngrams** are extracted using R-Library: tm (Text Mining) and NLP (Natural Language Processing). Extracted Ngrams are stored for ShinyApp word prediction direct access.  
+**Ngrams** are "N" combination of words (e.g. 2-grams: "of the", "as a" 3-grams: "I have a", "a lot of")
+ 
+ - Not every Ngram combination are covered, **Back-Off Algorithm** is adopted to ensure the every input are answered.  
+**Back-Off Algorithm** tries to find highest "N" available, if it is not available "N-1" is put in place. (e.g. Input: "Banana of" doen't match any 3-gram, algorithm will try to match for "of" in 2-gram)
 
 Thank you
 ========================================================

@@ -788,8 +788,10 @@ hljs.initHighlightingOnLoad();
 <div class="slideContent" >
 <ul>
 <li><p>Due to hardware limit, <strong>HC Corpora</strong> is cropped into multiple part, to process separately in a loop.</p></li>
-<li><p><strong>Ngrams</strong> are extracted using R-Library: tm (Text Mining) and NLP (Natural Language Processing). Extracted Ngrams are stored for ShinyApp word prediction direct access.</p></li>
-<li><p>Not every Ngram combination are covered, <strong>Back-Off Algorithm</strong> is adopted to ensure the every input are answered.</p></li>
+<li><p><strong>Ngrams</strong> are extracted using R-Library: tm (Text Mining) and NLP (Natural Language Processing). Extracted Ngrams are stored for ShinyApp word prediction direct access.<br/>
+<strong>Ngrams</strong> are &ldquo;N&rdquo; combination of words (e.g. 2-grams: &ldquo;of the&rdquo;, &ldquo;as a&rdquo; 3-grams: &ldquo;I have a&rdquo;, &ldquo;a lot of&rdquo;)</p></li>
+<li><p>Not every Ngram combination are covered, <strong>Back-Off Algorithm</strong> is adopted to ensure the every input are answered.<br/>
+<strong>Back-Off Algorithm</strong> tries to find highest &ldquo;N&rdquo; available, if it is not available &ldquo;N-1&rdquo; is put in place. (e.g. Input: &ldquo;Banana of&rdquo; doen&#39;t match any 3-gram, algorithm will try to match for &ldquo;of&rdquo; in 2-gram)</p></li>
 </ul>
 
 </div>
