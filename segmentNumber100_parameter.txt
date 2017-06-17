@@ -1,0 +1,179 @@
+# ------------------------------------------------------------
+# Segment Dataset & Make Corpus
+# ------------------------------------------------------------
+
+# Decide which part of the dataset 
+segmentPart   <- 1, 21, 41, 61, 81
+segmentNumber <- 20
+
+# ------------------------------------------------------------
+# Derive from
+# ------------------------------------------------------------
+
+segmentPart   <- 1
+segmentNumber <- 20
+corpus <- readRDS(paste0("corpus_part", segmentPart, "_", segmentNumber, ".RDS"))
+
+cp1 <- corpus[seq(1, length(corpus), 5)]
+cp2 <- corpus[seq(2, length(corpus), 5)]
+cp3 <- corpus[seq(3, length(corpus), 5)]
+cp4 <- corpus[seq(4, length(corpus), 5)]
+cp5 <- corpus[seq(5, length(corpus), 5)]
+
+saveRDS(cp1, paste0("corpus_part",  1, "_", 100, ".RDS"))
+saveRDS(cp2, paste0("corpus_part", 21, "_", 100, ".RDS"))
+saveRDS(cp3, paste0("corpus_part", 41, "_", 100, ".RDS"))
+saveRDS(cp4, paste0("corpus_part", 61, "_", 100, ".RDS"))
+saveRDS(cp5, paste0("corpus_part", 81, "_", 100, ".RDS"))
+
+# ------------------------------------------------------------
+
+# ------------------------------------------------------------
+
+# segmentNumber 100
+lowfreqPercentage2 <- 0.055
+lowfreqPercentage3 <- 0.03
+lowfreqPercentage4 <- 0.02
+lowfreqPercentage5 <- 0.01
+
+# ------------------------------------------------------------
+# 
+# ------------------------------------------------------------
+
+nrow(freq_2gram)
+nrow(freq_3gram)
+nrow(freq_4gram)
+nrow(freq_5gram)
+
+# [1] 3378
+# [1] 1562
+# [1] 267
+# [1] 90
+
+# [1] 3308
+# [1] 1531
+# [1] 275
+# [1] 100
+# 
+# [1] 3352
+# [1] 1543
+# [1] 270
+# [1] 100
+
+# [1] 3335
+# [1] 1523
+# [1] 238
+# [1] 85
+
+# [1] 3303
+# [1] 1553
+# [1] 277
+# [1] 118
+
+# ------------------------------------------------------------
+
+corpus_part1_100freq23.48335_2gram.RDS
+corpus_part1_100freq12.8091_3gram.RDS
+corpus_part1_100freq8.5394_4gram.RDS
+corpus_part1_100freq4.2697_5gram.RDS
+
+corpus_part21_100freq23.48335_2gram.RDS
+corpus_part21_100freq12.8091_3gram.RDS
+corpus_part21_100freq8.5394_4gram.RDS
+corpus_part21_100freq4.2697_5gram.RDS
+
+corpus_part41_100freq23.48335_2gram.RDS
+corpus_part41_100freq12.8091_3gram.RDS
+corpus_part41_100freq8.5394_4gram.RDS
+corpus_part41_100freq4.2697_5gram.RDS
+
+corpus_part61_100freq23.48335_2gram.RDS
+corpus_part61_100freq12.8091_3gram.RDS
+corpus_part61_100freq8.5394_4gram.RDS
+corpus_part61_100freq4.2697_5gram.RDS
+
+corpus_part81_100freq23.4828_2gram.RDS
+corpus_part81_100freq12.8088_3gram.RDS
+corpus_part81_100freq8.5392_4gram.RDS
+corpus_part81_100freq4.2696_5gram.RDS
+
+# ------------------------------------------------------------
+# Combine into freq_2gram....
+# ------------------------------------------------------------
+
+freq_2gram1 <- readRDS("corpus_part1_100freq23.48335_2gram.RDS")
+freq_2gram2 <- readRDS("corpus_part21_100freq23.48335_2gram.RDS")
+freq_2gram3 <- readRDS("corpus_part41_100freq23.48335_2gram.RDS")
+freq_2gram4 <- readRDS("corpus_part61_100freq23.48335_2gram.RDS")
+freq_2gram5 <- readRDS("corpus_part81_100freq23.4828_2gram.RDS")
+freq_2gram <- merge(freq_2gram1, freq_2gram2, "WordsCombination", all = T)
+freq_2gram <- merge(freq_2gram,  freq_2gram3, "WordsCombination", all = T)
+freq_2gram <- merge(freq_2gram,  freq_2gram4, "WordsCombination", all = T)
+freq_2gram <- merge(freq_2gram,  freq_2gram5, "WordsCombination", all = T)
+colnames(freq_2gram) <- c("WordsCombination", '1', '2', '3', '4', '5')
+
+freq_3gram1 <- readRDS("corpus_part1_100freq12.8091_3gram.RDS")
+freq_3gram2 <- readRDS("corpus_part21_100freq12.8091_3gram.RDS")
+freq_3gram3 <- readRDS("corpus_part41_100freq12.8091_3gram.RDS")
+freq_3gram4 <- readRDS("corpus_part61_100freq12.8091_3gram.RDS")
+freq_3gram5 <- readRDS("corpus_part81_100freq12.8088_3gram.RDS")
+freq_3gram <- merge(freq_3gram1, freq_3gram2, "WordsCombination", all = T)
+freq_3gram <- merge(freq_3gram,  freq_3gram3, "WordsCombination", all = T)
+freq_3gram <- merge(freq_3gram,  freq_3gram4, "WordsCombination", all = T)
+freq_3gram <- merge(freq_3gram,  freq_3gram5, "WordsCombination", all = T)
+colnames(freq_3gram) <- c("WordsCombination", '1', '2', '3', '4', '5')
+
+freq_4gram1 <- readRDS("corpus_part1_100freq8.5394_4gram.RDS")
+freq_4gram2 <- readRDS("corpus_part21_100freq8.5394_4gram.RDS")
+freq_4gram3 <- readRDS("corpus_part41_100freq8.5394_4gram.RDS")
+freq_4gram4 <- readRDS("corpus_part61_100freq8.5394_4gram.RDS")
+freq_4gram5 <- readRDS("corpus_part81_100freq8.5392_4gram.RDS")
+freq_4gram <- merge(freq_4gram1, freq_4gram2, "WordsCombination", all = T)
+freq_4gram <- merge(freq_4gram,  freq_4gram3, "WordsCombination", all = T)
+freq_4gram <- merge(freq_4gram,  freq_4gram4, "WordsCombination", all = T)
+freq_4gram <- merge(freq_4gram,  freq_4gram5, "WordsCombination", all = T)
+colnames(freq_4gram) <- c("WordsCombination", '1', '2', '3', '4', '5')
+
+freq_5gram1 <- readRDS("corpus_part1_100freq4.2697_5gram.RDS")
+freq_5gram2 <- readRDS("corpus_part21_100freq4.2697_5gram.RDS")
+freq_5gram3 <- readRDS("corpus_part41_100freq4.2697_5gram.RDS")
+freq_5gram4 <- readRDS("corpus_part61_100freq4.2697_5gram.RDS")
+freq_5gram5 <- readRDS("corpus_part81_100freq4.2696_5gram.RDS")
+freq_5gram <- merge(freq_5gram1, freq_5gram2, "WordsCombination", all = T)
+freq_5gram <- merge(freq_5gram,  freq_5gram3, "WordsCombination", all = T)
+freq_5gram <- merge(freq_5gram,  freq_5gram4, "WordsCombination", all = T)
+freq_5gram <- merge(freq_5gram,  freq_5gram5, "WordsCombination", all = T)
+colnames(freq_5gram) <- c("WordsCombination", '1', '2', '3', '4', '5')
+
+freq <- freq_2gram
+row.names(freq) <- freq$WordsCombination
+freq <- freq[,2:6]
+freq[is.na(freq)] <- 0
+freq <- sort(rowSums(freq), decreasing = TRUE)
+freq_2gram <- data.frame(WordsCombination = names(freq), Frequency = freq)
+
+freq <- freq_3gram
+row.names(freq) <- freq$WordsCombination
+freq <- freq[,2:6]
+freq[is.na(freq)] <- 0
+freq <- sort(rowSums(freq), decreasing = TRUE)
+freq_3gram <- data.frame(WordsCombination = names(freq), Frequency = freq)
+
+freq <- freq_4gram
+row.names(freq) <- freq$WordsCombination
+freq <- freq[,2:6]
+freq[is.na(freq)] <- 0
+freq <- sort(rowSums(freq), decreasing = TRUE)
+freq_4gram <- data.frame(WordsCombination = names(freq), Frequency = freq)
+
+freq <- freq_5gram
+row.names(freq) <- freq$WordsCombination
+freq <- freq[,2:6]
+freq[is.na(freq)] <- 0
+freq <- sort(rowSums(freq), decreasing = TRUE)
+freq_5gram <- data.frame(WordsCombination = names(freq), Frequency = freq)
+
+saveRDS(freq_2gram, paste0("freq_2gram.RDS"))
+saveRDS(freq_3gram, paste0("freq_3gram.RDS"))
+saveRDS(freq_4gram, paste0("freq_4gram.RDS"))
+saveRDS(freq_5gram, paste0("freq_5gram.RDS"))

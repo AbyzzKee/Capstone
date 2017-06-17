@@ -1,0 +1,86 @@
+# ------------------------------------------------------------
+# Segment Dataset & Make Corpus
+# ------------------------------------------------------------
+
+# Decide which part of the dataset 
+segmentPart   <- 1
+segmentNumber <- 20
+
+# [1] "Load"
+# user   system   elapsed 
+# 13.64    0.06   13.72 
+# [1] "VCorpus"
+# user   system   elapsed 
+# 38.23    0.06   38.47 
+# [1] "gc"
+# user   system   elapsed 
+# 39.33    0.06   39.58 
+# [1] "PlainTextDocument"
+# user   system   elapsed 
+# 93.98    0.89   95.06 
+# [1] "profanity"
+# user   system   elapsed 
+# 1160.44    1.24 1162.50 
+
+# ------------------------------------------------------------
+# Ngram
+# ------------------------------------------------------------
+
+# segmentNumber 20
+# lowfreqPercentage1 <- 1.5
+# lowfreqPercentage2 <- 0.32
+# lowfreqPercentage3 <- 0.07
+# lowfreqPercentage4 <- 0.018
+# lowfreqPercentage5 <- 0.0056
+
+# 1-gram
+# lowfreq <- 3    # Error: cannot allocate vector of size 72.5 Gb 
+# lowfreq <- 30   # Error: cannot allocate vector of size 15.6 Gb 
+# lowfreq <- 300  # Error: cannot allocate vector of size 2.6 Gb 
+# lowfreq <- 3000 # [1] 139 --------------- 1.4%
+
+# 2-gram
+# lowfreq <- 300  # Error: cannot allocate vector of size 1.6 Gb 
+# lowfreq <- 600 # Error: cannot allocate vector of size 656.4 Mb 
+# lowfreq <- 700 # [1] 326 --------------- 0.32%
+
+# 3-gram
+# lowfreq <- 30  # Error: cannot allocate vector of size 7.3 Gb 
+# lowfreq <- 100 # Error: cannot allocate vector of size 1019.6 Mb 
+# lowfreq <- 120 # Error: cannot allocate vector of size 734.6 Mb
+# lowfreq <- 150 # [1] 301 --------------- 0.07%
+# lowfreq <- 200 # [1] 165
+# lowfreq <- 300 # [1] 77
+
+# 4-gram
+# lowfreq <- 3  # Error: cannot allocate vector of size 73.5 Gb 
+# lowfreq <- 30 # Error: cannot allocate vector of size 900.7 Mb 
+# lowfreq <- 40 # [1] 243 --------------- 0.018%
+# lowfreq <- 100 # [1] 35
+
+# 5-gram
+# lowfreq <- 3 # Error: cannot allocate vector of size 15.1 Gb 
+# lowfreq <- 6 # Error: cannot allocate vector of size 2.4 Gb
+# lowfreq <- 9 # Error: cannot allocate vector of size 900.7 Mb 
+# lowfreq <- 12 # [1] 281 --------------- 0.0056%
+
+  # [1] "1-gram TermDocumentMatrix"
+  # user  system elapsed 
+  # 116.57    0.39  118.59 
+
+  # [1] "2-gram TermDocumentMatrix"
+  # user  system elapsed 
+  # 192.70    0.70  194.61 
+
+# ------------------------------------------------------------
+# 
+# ------------------------------------------------------------
+
+corpus_part1_20freq3000_1gram.RDS
+corpus_part1_20freq700_2gram.RDS
+corpus_part1_20freq150_3gram.RDS
+corpus_part1_20freq40_4gram.RDS
+corpus_part1_20freq12_5gram.RDS
+
+
+

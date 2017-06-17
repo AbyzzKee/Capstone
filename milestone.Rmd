@@ -1,0 +1,130 @@
+---
+title: "Lesson 10 Week 2 Milestone Report"
+author: "KEE"
+date: "May 14, 2017"
+output: html_document
+subtitle: Thie report will illustrate exploratory text mining on the Coursera-SwiftKey dataset and brief of the goals of the eventual app and algorithm.
+---
+
+## Download and loading dataset
+Data is available to download at https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip  
+Extract file to current directory and delete unnecessary folder.  
+```{r 1_Download, echo=TRUE, warning=FALSE, message=FALSE, cache=TRUE}
+# Download Dataset
+if ( !file.exists("en_US.twitter.txt") | !file.exists("en_US.news.txt") | !file.exists("en_US.blogs.txt") ) {
+  if ( !file.exists("Coursera-SwiftKey.zip") ) {
+    #download.file("https://d396qusza40orc.cloudfront.net/dsscapstone/dataset/Coursera-SwiftKey.zip", "Coursera-SwiftKey.zip");
+  }
+  unzip("Coursera-SwiftKey.zip", c("final/en_US/en_US.twitter.txt",
+                                   "final/en_US/en_US.news.txt","final/en_US/en_US.blogs.txt"))
+  file.rename("final/en_US/en_US.twitter.txt", "en_US.twitter.txt")
+  file.rename("final/en_US/en_US.news.txt",    "en_US.news.txt")
+  file.rename("final/en_US/en_US.blogs.txt",   "en_US.blogs.txt")
+  unlink("final", TRUE)
+}
+
+# Open File
+con_Twit <- file("en_US.twitter.txt", method = "rb")
+con_News <- file("en_US.news.txt",    method = "rb")
+con_Blog <- file("en_US.blogs.txt",   method = "rb")
+
+# Read File
+library(readr)
+en_Twit <- read_lines(con_Twit, progress = FALSE)
+en_News <- read_lines(con_News, progress = FALSE)
+en_Blog <- read_lines(con_Blog, progress = FALSE)
+```
+
+## Basic report of summary statistic about the dataset
+### Data length and width
+The dataset have text message from **twitter**, **news** and **blogs**.  
+Below show the number of records (length) and character count of each record (width):  
+
+```{r 2_basic, echo=TRUE, warning=FALSE, message=FALSE, cache=TRUE}
+length_Twit <- length(en_Twit) #2,360,148
+length_News <- length(en_News) #1,010,242
+length_Blog <- length(en_Blog) #899,288
+width_Twit <- max(sapply(en_Twit, nchar)) #213
+width_News <- max(sapply(en_News, nchar)) #11,384
+width_Blog <- max(sapply(en_Blog, nchar)) #40,835
+data.frame(file = c("twitter","news","blogs"),
+           length = c(length_Twit, length_News, length_Blog),
+           width = c(width_Twit, width_News, width_Blog))
+```
+### Summary statistic
+For this basic report, we only process first 1000 record of each file.  
+
+```{r 3_ngram, echo=TRUE, warning=FALSE, message=FALSE, cache=TRUE}
+part_dataset <- c(en_Twit[1:1000],en_News[1:1000],en_Blog[1:1000])
+# iconv to prevent tolower error
+part_dataset <- iconv(part_dataset, "latin1", "ASCII")
+
+# Text Mining Cleaning
+require(tm)
+corpus <- VCorpus(VectorSource(part_dataset))
+corpus<-tm_map(corpus, content_transformer(tolower))
+corpus<-tm_map(corpus, stripWhitespace)
+corpus<-tm_map(corpus, removePunctuation)
+corpus<-tm_map(corpus, removeNumbers)
+
+# Profanity Filtering
+if ( !file.exists("bad-words.txt") ) {
+  download.file("http://www.cs.cmu.edu/~biglou/resources/bad-words.txt", "bad-words.txt");
+}
+profanity <- readLines("bad-words.txt")
+corpus<-tm_map(corpus, removeWords, profanity)
+
+# Unigram
+tdm_1gram <- TermDocumentMatrix(corpus)
+sparsed_1 <- removeSparseTerms(tdm_1gram, 0.95)
+sum_1gram <- sort(rowSums(as.matrix(sparsed_1)), decreasing = TRUE)
+df_1gram <- data.frame(Word = names(sum_1gram), Frequency = sum_1gram)
+
+# Tokenization Function
+BigramTokenizer <-
+  function(x)
+    unlist(lapply(ngrams(words(x), 2), paste, collapse = " "), use.names = FALSE)
+TrigramTokenizer <-
+  function(x)
+    unlist(lapply(ngrams(words(x), 3), paste, collapse = " "), use.names = FALSE)
+
+# Bigram
+tdm_2gram <- TermDocumentMatrix(corpus, control = list(tokenize = BigramTokenizer))
+sparsed_2 <- removeSparseTerms(tdm_2gram, 0.99)
+sum_2gram <- sort(rowSums(as.matrix(sparsed_2)), decreasing = TRUE)
+df_2gram <- data.frame(WordsCombination = names(sum_2gram), Frequency = sum_2gram)
+
+# Trigram
+tdm_3gram <- TermDocumentMatrix(corpus, control = list(tokenize = TrigramTokenizer))
+sparsed_3 <- removeSparseTerms(tdm_3gram, 0.997)
+sum_3gram <- sort(rowSums(as.matrix(sparsed_3)), decreasing = TRUE)
+df_3gram <- data.frame(WordsCombination = names(sum_3gram), Frequency = sum_3gram)
+```
+```{r 4_plot, echo=TRUE, warning=FALSE, message=FALSE, cache=TRUE}
+require(ggplot2)
+ggplot( df_1gram[1:10,], aes(x = reorder(Word, -Frequency), y = Frequency) ) + 
+  ggtitle("Top 10 Single Word Occurence") + 
+  labs(x = "Word", y = "Frequency") +
+  geom_bar(stat="Identity") + 
+  theme(axis.text.x = element_text(angle = 90))
+ggplot( df_2gram[1:10,], aes(x = reorder(WordsCombination, -Frequency), y = Frequency) ) + 
+  ggtitle("Top 10 Words Pair Occurence") +
+  labs(x = "Words Pair", y = "Frequency") +
+  geom_bar(stat="Identity") + 
+  theme(axis.text.x = element_text(angle = 90))
+ggplot( df_3gram[1:10,], aes(x = reorder(WordsCombination, -Frequency), y = Frequency) ) + 
+  ggtitle("Top 10 3-Word-Combination Occurence") +
+  labs(x = "Words Combination", y = "Frequency") +
+  geom_bar(stat="Identity") + 
+  theme(axis.text.x = element_text(angle = 90))
+```
+
+## Interesting Findings
+I observe that top words combinations (*ngrams*) are mostly combination of words in *tm::stopwords("en")*, which are regular words in different language.  
+These top combinations occupied a large part of the content, accurately recommend these words will be the main part of the apps accuracy.  
+
+## Goals of the eventual app and algorithm
+The eventual app will predict the next word, based on user input.  
+The prediction is expected to be more accurate as user key in more words.  
+Beside Ngrams, verb noun adjective relations should be also included.  
+
